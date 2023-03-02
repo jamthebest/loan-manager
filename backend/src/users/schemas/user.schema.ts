@@ -12,7 +12,7 @@ export class User {
     email: string;
 
     @Prop({  })
-    phone: string;
+    phone: number;
 
     @Prop({ required: true })
     username: string;

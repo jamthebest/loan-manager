@@ -30,7 +30,7 @@ describe('UsersController', () => {
         password: '@sD123'
       };
 
-      jest.spyOn(usersService, 'create').mockImplementation(() => userData);
+      jest.spyOn(usersService, 'create').mockImplementation(async () => userData);
       const result = await usersController.create(userData);
 
       expect(result).toEqual(expect.objectContaining({
@@ -47,7 +47,7 @@ describe('UsersController', () => {
     it('should return a user by ID', async () => {
       const userId = 1;
 
-      const result = await usersService.findOne(userId);
+      const result = await usersController.findOne(userId);
 
       expect(result).toEqual(expect.objectContaining({
         id: userId,
@@ -68,7 +68,7 @@ describe('UsersController', () => {
         phone: 5555555555
       };
 
-      jest.spyOn(usersService, 'create').mockImplementation(() => userData);
+      jest.spyOn(usersService, 'update').mockImplementation(async () => userData);
       const result = await usersController.update(userId, userData);
 
       expect(result).toEqual(expect.objectContaining({
@@ -86,7 +86,7 @@ describe('UsersController', () => {
         { id: 1, name: 'John Doe', email: 'johndoe@example.com', phone: 5555555555, username: 'johndoe' }
       ];
 
-      jest.spyOn(usersService, 'create').mockImplementation(() => users);
+      jest.spyOn(usersService, 'findAll').mockImplementation(async () => users);
       const result = await usersController.findAll();
 
       expect(result).toEqual(users);
