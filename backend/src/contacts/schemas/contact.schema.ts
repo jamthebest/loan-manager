@@ -13,7 +13,7 @@ export class Contact {
     email: string;
 
     @Prop({  })
-    phone: string;
+    phone: number;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
     userOwner: User;

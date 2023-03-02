@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ContactsController } from './contacts.controller';
 import { ContactsService } from './contacts.service';
+var mongoose = require('mongoose');
 
 describe('ContactsController', () => {
   let contactsController: ContactsController;
@@ -26,10 +27,10 @@ describe('ContactsController', () => {
         name: 'John Doe',
         email: 'johndoe@example.com',
         phone: 5555555555,
-        userOwner: 1
+        userOwner: mongoose.Types.ObjectId(1)
       };
 
-      jest.spyOn(contactsService, 'create').mockImplementation(() => contactData);
+      jest.spyOn(contactsService, 'create').mockImplementation(async () => contactData);
       const result = await contactsController.create(contactData);
 
       expect(result).toEqual(expect.objectContaining({
@@ -48,10 +49,10 @@ describe('ContactsController', () => {
         name: 'Jane Doe',
         email: 'janedoe@example.com',
         phone: 5555555556,
-        userOwner: 1
+        userOwner: mongoose.Types.ObjectId(1)
       };
 
-      jest.spyOn(contactsService, 'create').mockImplementation(() => contactData);
+      jest.spyOn(contactsService, 'create').mockImplementation(async () => contactData);
       const result = await contactsController.create(contactData);
 
       expect(result).toEqual(expect.objectContaining({
@@ -89,7 +90,7 @@ describe('ContactsController', () => {
         phone: 5555555555
       };
 
-      jest.spyOn(contactsService, 'create').mockImplementation(() => contactData);
+      jest.spyOn(contactsService, 'update').mockImplementation(async () => contactData);
       const result = await contactsController.update(contactId, contactData);
 
       expect(result).toEqual(expect.objectContaining({
@@ -104,11 +105,11 @@ describe('ContactsController', () => {
   describe('findAll', () => {
     it('should return an array of contacts', async () => {
       const contacts = [
-        { id: 1, name: 'John Doe', email: 'johndoe@example.com', phone: 5555555555, userOwner: 1 },
-        { id: 2, name: 'Jane Doe', email: 'janedoe@example.com', phone: 5555555556, userOwner: 1 },
+        { id: 1, name: 'John Doe', email: 'johndoe@example.com', phone: 5555555555, userOwner: mongoose.Types.ObjectId(1) },
+        { id: 2, name: 'Jane Doe', email: 'janedoe@example.com', phone: 5555555556, userOwner: mongoose.Types.ObjectId(1) },
       ];
 
-      jest.spyOn(contactsService, 'create').mockImplementation(() => contacts);
+      jest.spyOn(contactsService, 'findAll').mockImplementation(async () => contacts);
       const result = await contactsController.findAll();
 
       expect(result).toEqual(contacts);
