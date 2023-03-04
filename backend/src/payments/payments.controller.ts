@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 
 @Controller('payments')
+@ApiTags('payment')  // OpenAPI decorator to group endpoints in Swagger UI
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 

@@ -10,7 +10,7 @@ export class LoansService {
   constructor(@InjectModel(Loan.name) private loanModel: Model<LoanDocument>) { }
 
   async create(createLoanDto: CreateLoanDto): Promise<Loan> {
-    createLoanDto.status = 'P';
+    createLoanDto.status = 'A';
     const createdLoan = new this.loanModel(createLoanDto);
     return createdLoan.save();
   }
