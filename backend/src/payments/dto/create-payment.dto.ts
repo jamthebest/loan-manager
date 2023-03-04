@@ -1,6 +1,6 @@
 export class CreatePaymentDto {
-    loan_id: number;
+    loanId: number;
     amount: number;
-    interest_amount: number;
+    interestAmount: number;
     date: string;
 }

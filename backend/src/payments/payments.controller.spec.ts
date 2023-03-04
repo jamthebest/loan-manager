@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
+var mongoose = require('mongoose');
 
 describe('PaymentsController', () => {
   let paymentsController: PaymentsController;
@@ -23,20 +24,20 @@ describe('PaymentsController', () => {
   describe('create', () => {
     it('should create a new payment', async () => {
       const paymentData = {
-        loan_id: 1,
+        loanId: mongoose.Types.ObjectId(1),
         amount: 1000.00,
-        interest_amount: 200.00,
+        interestAmount: 200.00,
         date: '2023-03-28'
       };
 
-      jest.spyOn(paymentsService, 'create').mockImplementation(() => paymentData);
+      jest.spyOn(paymentsService, 'create').mockImplementation(async () => paymentData);
       const result = await paymentsController.create(paymentData);
 
       expect(result).toEqual(expect.objectContaining({
         id: expect.any(Number),
-        loan_id: paymentData.loan_id,
+        loanId: paymentData.loanId,
         amount: paymentData.amount,
-        interest_amount: paymentData.interest_amount,
+        interestAmount: paymentData.interestAmount,
         date: paymentData.date
       }));
     });
@@ -51,9 +52,9 @@ describe('PaymentsController', () => {
       expect(result).toEqual(expect.objectContaining({
         id: paymentId,
         amount: expect.any(Number),
-        interest_amount: expect.any(Number),
+        interestAmount: expect.any(Number),
         date: expect.any(String),
-        loan_id: expect.any(Number)
+        loanId: expect.any(Number)
       }));
     });
   });
@@ -62,7 +63,7 @@ describe('PaymentsController', () => {
     it('should return an array of payments', async () => {
       const payments = [];
 
-      jest.spyOn(paymentsService, 'create').mockImplementation(() => payments);
+      jest.spyOn(paymentsService, 'findAll').mockImplementation(async () => payments);
       const result = await paymentsController.findAll();
 
       expect(result).toHaveLength(1);
