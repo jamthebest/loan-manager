@@ -20,17 +20,17 @@ export class ContactsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.contactsService.findOne(+id);
+  findOne(@Param('id') id: string) {
+    return this.contactsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateContactDto: UpdateContactDto) {
-    return this.contactsService.update(+id, updateContactDto);
+  update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
+    return this.contactsService.update(id, updateContactDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.contactsService.remove(+id);
+  remove(@Param('id') id: string) {
+    return this.contactsService.remove(id);
   }
 }

@@ -18,15 +18,15 @@ export class ContactsService {
     return this.contactModel.find({}, { name: 1, email: 1, phone: 1, userOwner: 1 }).exec();
   }
 
-  async findOne(id: number): Promise<Contact> {
+  async findOne(id: string): Promise<Contact> {
     return this.contactModel.findById(id, { name: 1, email: 1, phone: 1, userOwner: 1 }).exec();
   }
 
-  async update(id: number, updateContactDto: UpdateContactDto): Promise<Partial<Contact>> {
+  async update(id: string, updateContactDto: UpdateContactDto): Promise<Partial<Contact>> {
     return this.contactModel.findByIdAndUpdate(id, updateContactDto, { new: true, select: { name: 1, email: 1, phone: 1 } }).exec();
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.contactModel.findByIdAndDelete(id).exec();
   }
 }

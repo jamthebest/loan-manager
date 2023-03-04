@@ -1,5 +1,5 @@
 export class Loan {
-    id: number;
+    id: string;
     userId: number;
     contactId: number;
     amount: number;

@@ -1,5 +1,5 @@
 export class Payment {
-    id: number;
+    id: string;
     loanId: number;
     amount: number;
     interestAmount: number;

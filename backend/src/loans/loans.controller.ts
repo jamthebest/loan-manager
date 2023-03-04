@@ -20,17 +20,17 @@ export class LoansController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.loansService.findOne(+id);
+  findOne(@Param('id') id: string) {
+    return this.loansService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateLoanDto: UpdateLoanDto) {
-    return this.loansService.update(+id, updateLoanDto);
+  update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
+    return this.loansService.update(id, updateLoanDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.loansService.remove(+id);
+  remove(@Param('id') id: string) {
+    return this.loansService.remove(id);
   }
 }

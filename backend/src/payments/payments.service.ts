@@ -18,15 +18,15 @@ export class PaymentsService {
     return this.paymentModel.find().exec();
   }
 
-  async findOne(id: number): Promise<Payment> {
+  async findOne(id: string): Promise<Payment> {
     return this.paymentModel.findById(id).exec();
   }
 
-  async update(id: number, updatePaymentDto: UpdatePaymentDto): Promise<Partial<Payment>> {
+  async update(id: string, updatePaymentDto: UpdatePaymentDto): Promise<Partial<Payment>> {
     return this.paymentModel.findByIdAndUpdate(id, updatePaymentDto, { new: true, select: { amount: 1, date: 1, interestAmount: 1 } }).exec();
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.paymentModel.findByIdAndDelete(id).exec();
   }
 }

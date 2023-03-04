@@ -18,7 +18,7 @@ export class UsersService {
     return this.userModel.find({}, { name: 1, email: 1, phone: 1, username: 1 }).exec();
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: string): Promise<User> {
     return this.userModel.findById(id, { name: 1, email: 1, phone: 1, username: 1 }).exec();
   }
 
@@ -26,11 +26,15 @@ export class UsersService {
     return this.userModel.findOne({ username }, { name: 1, email: 1, phone: 1, username: 1 }).exec();
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<Partial<User>> {
+  async findByEmail(email: string): Promise<User> {
+    return this.userModel.findOne({ email }, { name: 1, email: 1, phone: 1, username: 1 }).exec();
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<Partial<User>> {
     return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true, select: { name: 1, email: 1, phone: 1 } }).exec();
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.userModel.findByIdAndDelete(id).exec();
   }
 }
