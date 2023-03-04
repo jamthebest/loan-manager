@@ -23,7 +23,7 @@ export class PaymentsService {
   }
 
   async update(id: number, updatePaymentDto: UpdatePaymentDto): Promise<Partial<Payment>> {
-    return this.paymentModel.findByIdAndUpdate(id, updatePaymentDto, { new: true }).projection({ amount: 1, date: 1, interestAmount: 1 }).exec();
+    return this.paymentModel.findByIdAndUpdate(id, updatePaymentDto, { new: true, select: { amount: 1, date: 1, interestAmount: 1 } }).exec();
   }
 
   async remove(id: number): Promise<void> {

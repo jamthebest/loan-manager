@@ -15,15 +15,15 @@ export class ContactsService {
   }
 
   async findAll(): Promise<Partial<Contact[]>> {
-    return this.contactModel.find().projection({ name: 1, email: 1, phone: 1, userOwner: 1 }).exec();
+    return this.contactModel.find({}, { name: 1, email: 1, phone: 1, userOwner: 1 }).exec();
   }
 
   async findOne(id: number): Promise<Contact> {
-    return this.contactModel.findById(id).projection({ name: 1, email: 1, phone: 1, userOwner: 1 }).exec();
+    return this.contactModel.findById(id, { name: 1, email: 1, phone: 1, userOwner: 1 }).exec();
   }
 
   async update(id: number, updateContactDto: UpdateContactDto): Promise<Partial<Contact>> {
-    return this.contactModel.findByIdAndUpdate(id, updateContactDto, { new: true }).projection({ name: 1, email: 1, phone: 1 }).exec();
+    return this.contactModel.findByIdAndUpdate(id, updateContactDto, { new: true, select: { name: 1, email: 1, phone: 1 } }).exec();
   }
 
   async remove(id: number): Promise<void> {

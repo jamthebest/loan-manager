@@ -8,7 +8,10 @@ import { LoansModule } from './loans/loans.module';
 import { PaymentsModule } from './payments/payments.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost/loanapp'), UsersModule, ContactsModule, LoansModule, PaymentsModule],
+  imports: [
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/loanapp', {
+      dbName: 'loanapp'
+    }), UsersModule, ContactsModule, LoansModule, PaymentsModule],
   controllers: [AppController],
   providers: [AppService],
 })

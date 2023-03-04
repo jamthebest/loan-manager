@@ -15,19 +15,19 @@ export class UsersService {
   }
 
   async findAll(): Promise<Partial<User[]>> {
-    return this.userModel.find().projection({ name: 1, email: 1, phone: 1, username: 1 }).exec();
+    return this.userModel.find({}, { name: 1, email: 1, phone: 1, username: 1 }).exec();
   }
 
   async findOne(id: number): Promise<User> {
-    return this.userModel.findById(id).projection({ name: 1, email: 1, phone: 1, username: 1 }).exec();
+    return this.userModel.findById(id, { name: 1, email: 1, phone: 1, username: 1 }).exec();
   }
 
   async findByUsername(username: string): Promise<User> {
-    return this.userModel.findOne({ username }).projection({ name: 1, email: 1, phone: 1, username: 1 }).exec();
+    return this.userModel.findOne({ username }, { name: 1, email: 1, phone: 1, username: 1 }).exec();
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<Partial<User>> {
-    return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).projection({ name: 1, email: 1, phone: 1 }).exec();
+    return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true, select: { name: 1, email: 1, phone: 1 } }).exec();
   }
 
   async remove(id: number): Promise<void> {

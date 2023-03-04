@@ -16,15 +16,15 @@ export class LoansService {
   }
 
   async findAll(): Promise<Partial<Loan[]>> {
-    return this.loanModel.find().projection().exec();
+    return this.loanModel.find().exec();
   }
 
   async findOne(id: number): Promise<Loan> {
-    return this.loanModel.findById(id).projection().exec();
+    return this.loanModel.findById(id).exec();
   }
 
   async update(id: number, updateLoanDto: UpdateLoanDto): Promise<Partial<Loan>> {
-    return this.loanModel.findByIdAndUpdate(id, updateLoanDto, { new: true }).projection({ amount: 1, interest: 1, date: 1, status: 1 }).exec();
+    return this.loanModel.findByIdAndUpdate(id, updateLoanDto, { new: true, select: { amount: 1, interest: 1, date: 1, status: 1 } }).exec();
   }
 
   async remove(id: number): Promise<void> {
