@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 import { LoansService } from './loans.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
@@ -15,8 +16,8 @@ export class LoansController {
   }
 
   @Get()
-  findAll() {
-    return this.loansService.findAll();
+  findAll(@Req() request: Request) {
+    return this.loansService.findAll(request);
   }
 
   @Get(':id')

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Request } from 'express';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,8 +15,8 @@ export class UsersService {
     return createdUser.save();
   }
 
-  async findAll(): Promise<Partial<User[]>> {
-    return this.userModel.find({}, { name: 1, email: 1, phone: 1, username: 1 }).exec();
+  async findAll(request: Request): Promise<Partial<User[]>> {
+    return this.userModel.find(request.query, { name: 1, email: 1, phone: 1, username: 1 }).setOptions({ sanitizeFilter: true }).exec();
   }
 
   async findOne(id: string): Promise<User> {

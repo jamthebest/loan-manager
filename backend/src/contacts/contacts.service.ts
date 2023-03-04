@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Request } from 'express';
 import { Contact, ContactDocument } from './schemas/contact.schema';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
@@ -14,8 +15,8 @@ export class ContactsService {
     return createdContact.save();
   }
 
-  async findAll(): Promise<Partial<Contact[]>> {
-    return this.contactModel.find({}, { name: 1, email: 1, phone: 1, userOwner: 1 }).exec();
+  async findAll(request: Request): Promise<Partial<Contact[]>> {
+    return this.contactModel.find(request.query, { name: 1, email: 1, phone: 1, userOwner: 1 }).setOptions({ sanitizeFilter: true }).exec();
   }
 
   async findOne(id: string): Promise<Contact> {

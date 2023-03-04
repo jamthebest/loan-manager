@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Request } from 'express';
 import { Loan, LoanDocument } from './schemas/loan.schema';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
@@ -15,8 +16,8 @@ export class LoansService {
     return createdLoan.save();
   }
 
-  async findAll(): Promise<Partial<Loan[]>> {
-    return this.loanModel.find().exec();
+  async findAll(request: Request): Promise<Partial<Loan[]>> {
+    return this.loanModel.find(request.query).setOptions({ sanitizeFilter: true }).exec();
   }
 
   async findOne(id: string): Promise<Loan> {

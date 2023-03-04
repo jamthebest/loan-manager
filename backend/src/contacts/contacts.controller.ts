@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
@@ -15,8 +16,8 @@ export class ContactsController {
   }
 
   @Get()
-  findAll() {
-    return this.contactsService.findAll();
+  findAll(@Req() request: Request) {
+    return this.contactsService.findAll(request);
   }
 
   @Get(':id')

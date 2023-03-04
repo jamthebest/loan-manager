@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Request } from 'express';
 import { Payment, PaymentDocument } from './schemas/payment.schema';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -14,8 +15,8 @@ export class PaymentsService {
     return createdPayment.save();
   }
 
-  async findAll(): Promise<Partial<Payment[]>> {
-    return this.paymentModel.find().exec();
+  async findAll(request: Request): Promise<Partial<Payment[]>> {
+    return this.paymentModel.find(request.query).setOptions({ sanitizeFilter: true }).exec();
   }
 
   async findOne(id: string): Promise<Payment> {
