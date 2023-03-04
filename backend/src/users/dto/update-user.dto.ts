@@ -1,8 +1,14 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-    name: string;
-    email: string;
-    phone: number;
+    @ApiProperty({ example: 'John Doe' })
+    name?: string;
+
+    @ApiProperty({ example: 'johndoe@example.com' })
+    email?: string;
+
+    @ApiProperty({ example: '5555555555' })
+    phone?: number;
 }

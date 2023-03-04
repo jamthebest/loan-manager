@@ -5,10 +5,10 @@ export class CreateContactDto {
     name: string;
 
     @ApiProperty({ example: 'janedoe@example.com' })
-    email: string;
+    email?: string;
 
     @ApiProperty({ example: '5555555556' })
-    phone: number;
+    phone?: number;
 
     @ApiProperty({ example: 1 })
     userOwner: number;

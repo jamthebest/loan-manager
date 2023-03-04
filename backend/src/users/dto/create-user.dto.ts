@@ -8,7 +8,7 @@ export class CreateUserDto {
     email: string;
 
     @ApiProperty({ example: '5555555555' })
-    phone: number;
+    phone?: number;
 
     @ApiProperty({ example: 'johndoe' })
     username: string;
