@@ -23,7 +23,7 @@ export class Loan {
     date: string;
 
     @Prop({ required: true })
-    status: string;
+    status?: string;
 }
 
 export const LoanSchema = SchemaFactory.createForClass(Loan);

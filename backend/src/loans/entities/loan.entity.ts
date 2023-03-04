@@ -1,7 +1,7 @@
 export class Loan {
     id: number;
-    user_id: number;
-    contact_id: number;
+    userId: number;
+    contactId: number;
     amount: number;
     interest: number;
     date: string;

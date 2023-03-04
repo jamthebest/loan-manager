@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoansController } from './loans.controller';
 import { LoansService } from './loans.service';
+var mongoose = require('mongoose');
 
 describe('LoansController', () => {
   let loansController: LoansController;
@@ -23,20 +24,20 @@ describe('LoansController', () => {
   describe('create', () => {
     it('should create a new loan', async () => {
       const loanData = {
-        user_id: 1,
-        contact_id: 1,
+        userId: mongoose.Types.ObjectId(1),
+        contactId: mongoose.Types.ObjectId(1),
         amount: 1000.00,
         interest: 20,
         date: '2023-02-28'
       };
 
-      jest.spyOn(loansService, 'create').mockImplementation(() => loanData);
+      jest.spyOn(loansService, 'create').mockImplementation(async () => loanData);
       const result = await loansController.create(loanData);
 
       expect(result).toEqual(expect.objectContaining({
         id: expect.any(Number),
-        user_id: loanData.user_id,
-        contact_id: loanData.contact_id,
+        userId: loanData.userId,
+        contactId: loanData.contactId,
         amount: loanData.amount,
         interest: loanData.interest,
         date: loanData.date,
@@ -66,20 +67,20 @@ describe('LoansController', () => {
     it('should update an existing loan', async () => {
       const loanId = 1;
       const loanData = {
-        user_id: 1,
-        contact_id: 1,
+        userId: mongoose.Types.ObjectId(1),
+        contactId: mongoose.Types.ObjectId(1),
         amount: 1000.00,
         interest: 20,
         date: '2023-02-28'
       };
 
-      jest.spyOn(loansService, 'create').mockImplementation(() => loanData);
+      jest.spyOn(loansService, 'update').mockImplementation(async () => loanData);
       const result = await loansController.update(loanId, loanData);
 
       expect(result).toEqual(expect.objectContaining({
         id: loanId,
-        user_id: loanData.user_id,
-        contact_id: loanData.contact_id,
+        userId: loanData.userId,
+        contactId: loanData.contactId,
         amount: loanData.amount,
         interest: loanData.interest,
         date: loanData.date,
@@ -92,7 +93,7 @@ describe('LoansController', () => {
     it('should return an array of loans', async () => {
       const loans = [];
 
-      jest.spyOn(loansService, 'create').mockImplementation(() => loans);
+      jest.spyOn(loansService, 'findAll').mockImplementation(async () => loans);
       const result = await loansController.findAll();
 
       expect(result).toHaveLength(1);
