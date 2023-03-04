@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { UsersService } from './users.service';
@@ -11,7 +11,15 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
+    let user = await this.usersService.findByEmail(createUserDto.email);
+    if (user && user.email) {
+      throw new HttpException('Email already exists', HttpStatus.CONFLICT);
+    }
+    user = await this.usersService.findByUsername(createUserDto.username);
+    if (user && user.username) {
+      throw new HttpException('Username already exists', HttpStatus.CONFLICT);
+    }
     return this.usersService.create(createUserDto);
   }
 
