@@ -17,6 +17,7 @@ export class LoansService {
   }
 
   async findAll(request: Request): Promise<Partial<Loan[]>> {
+    request.query.userId = request.user._id;
     return this.loanModel.find(request.query).setOptions({ sanitizeFilter: true }).exec();
   }
 

@@ -16,6 +16,7 @@ export class ContactsService {
   }
 
   async findAll(request: Request): Promise<Partial<Contact[]>> {
+    request.query.userOwner = request.user._id;
     return this.contactModel.find(request.query, { name: 1, email: 1, phone: 1, userOwner: 1 }).setOptions({ sanitizeFilter: true }).exec();
   }
 

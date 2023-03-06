@@ -1,11 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateLoanDto {
-    @ApiProperty({ example: 1 })
-    userId: number;
+    userId: string;
 
-    @ApiProperty({ example: 1 })
-    contactId: number;
+    @ApiProperty({ example: '507c7f79bcf86cd7994f6c0e' })
+    contactId: string;
 
     @ApiProperty({ example: '1000.00' })
     amount: number;

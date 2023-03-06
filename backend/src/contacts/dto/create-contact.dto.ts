@@ -10,6 +10,5 @@ export class CreateContactDto {
     @ApiProperty({ example: '5555555556' })
     phone?: number;
 
-    @ApiProperty({ example: 1 })
-    userOwner: number;
+    userOwner: string;
 }

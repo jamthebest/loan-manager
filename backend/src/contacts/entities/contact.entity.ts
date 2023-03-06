@@ -3,5 +3,5 @@ export class Contact {
     name: string;
     email: string;
     phone: number;
-    userOwner: number;
+    userOwner: string;
 }
