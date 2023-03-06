@@ -23,8 +23,8 @@ export class UsersService {
     return this.userModel.findById(id, { name: 1, email: 1, phone: 1, username: 1 }).exec();
   }
 
-  async findByUsername(username: string): Promise<User> {
-    return this.userModel.findOne({ username }, { name: 1, email: 1, phone: 1, username: 1 }).exec();
+  async findByUsername(username: string, getPassword?: boolean): Promise<User> {
+    return this.userModel.findOne({ username }, { name: 1, email: 1, phone: 1, username: 1, password: getPassword ? 1 : 0 }).exec();
   }
 
   async findByEmail(email: string): Promise<User> {
