@@ -11,14 +11,15 @@ export class LoansService {
   constructor(@InjectModel(Loan.name) private loanModel: Model<LoanDocument>) { }
 
   async create(createLoanDto: CreateLoanDto): Promise<Loan> {
-    createLoanDto.status = 'A';
     const createdLoan = new this.loanModel(createLoanDto);
     return createdLoan.save();
   }
 
-  async findAll(request: Request): Promise<Partial<Loan[]>> {
-    request.query.userId = request.user._id;
-    return this.loanModel.find(request.query).setOptions({ sanitizeFilter: true }).exec();
+  async findAll(request?: Request): Promise<Partial<Loan[]>> {
+    if (request) {
+      request.query.userId = request.user._id;
+    }
+    return this.loanModel.find(request && request.query || {}).setOptions({ sanitizeFilter: true }).exec();
   }
 
   async findOne(id: string): Promise<Loan> {

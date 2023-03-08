@@ -11,13 +11,16 @@ export class LoansController {
   constructor(private readonly loansService: LoansService) {}
 
   @Post()
-  create(@Body() createLoanDto: CreateLoanDto, @Req() request: Request) {
-    createLoanDto.userId = request.user._id;
+  create(@Body() createLoanDto: CreateLoanDto, @Req() request?: Request) {
+    if (request) {
+      createLoanDto.userId = request.user._id;
+    }
+    createLoanDto.status = 'P'; // Pending
     return this.loansService.create(createLoanDto);
   }
 
   @Get()
-  findAll(@Req() request: Request) {
+  findAll(@Req() request?: Request) {
     return this.loansService.findAll(request);
   }
 
