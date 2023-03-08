@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Request } from 'express';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
+import { CreatedUserDto } from './dto/created-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -15,7 +16,7 @@ export class UsersService {
    * @param createUserDto - The DTO for creating a new user
    * @returns The created user
    */
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<CreatedUserDto> {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
@@ -25,8 +26,8 @@ export class UsersService {
    * @param request - The HTTP request object containing the query parameters
    * @returns The array of users matching the query parameters
    */
-  async findAll(request: Request): Promise<Partial<User[]>> {
-    return this.userModel.find(request.query, { name: 1, email: 1, phone: 1, username: 1 }).setOptions({ sanitizeFilter: true }).exec();
+  async findAll(request?: Request): Promise<Partial<User[]>> {
+    return this.userModel.find(request && request.query, { name: 1, email: 1, phone: 1, username: 1 }).setOptions({ sanitizeFilter: true }).exec();
   }
 
   /**
@@ -45,7 +46,17 @@ export class UsersService {
    * @returns The found user
    */
   async findByUsername(username: string, getPassword?: boolean): Promise<User> {
-    return this.userModel.findOne({ username }, { name: 1, email: 1, phone: 1, username: 1, password: getPassword ? 1 : 0 }).exec();
+    let projection = {
+      name: 1,
+      email: 1, 
+      phone: 1, 
+      username: 1,
+      password: 1
+    };
+    if (!getPassword) {
+      delete projection.password;
+    }
+    return this.userModel.findOne({ username }, projection).exec();
   }
 
   /**

@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from '../auth/public.decorator';
+import { CreatedUserDto } from './dto/created-user.dto';
 import constants from '../util/constants';
 import * as bcrypt from 'bcrypt';
 
@@ -20,7 +21,7 @@ export class UsersController {
   */
   @Public()
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto): Promise<CreatedUserDto> {
     // Checks if the email or username already exist before creating the user. 
     let user = await this.usersService.findByEmail(createUserDto.email);
     if (user && user.email) {
@@ -42,7 +43,7 @@ export class UsersController {
    * @returns A list of all users in the database
    */
   @Get()
-  findAll(@Req() request: Request) {
+  findAll(@Req() request?: Request) {
     return this.usersService.findAll(request);
   }
 
@@ -74,6 +75,14 @@ export class UsersController {
    */
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+    return this.usersService.remove(id).then(() => {
+      return {
+        success: true
+      };
+    }).catch(() => {
+      return {
+        success: false
+      };
+    });
   }
 }

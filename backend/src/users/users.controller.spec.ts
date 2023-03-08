@@ -1,19 +1,58 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Connection, connect, Model } from "mongoose";
+import { getModelToken } from "@nestjs/mongoose";
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { User, UserSchema } from './schemas/user.schema';
+import { HttpException } from '@nestjs/common';
+
+let userData = {
+  _id: '507f1f77bcf86cd799439011',
+  name: 'John Doe',
+  email: 'johndoe@example.com',
+  phone: 5555555555,
+  username: 'johndoe',
+  password: '@sD123'
+};
 
 describe('UsersController', () => {
   let usersService: UsersService;
   let usersController: UsersController;
+  let mongod: MongoMemoryServer;
+  let mongoConnection: Connection;
+  let userModel: Model<User>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    mongod = await MongoMemoryServer.create();
+    const uri = mongod.getUri();
+    mongoConnection = (await connect(uri)).connection;
+    userModel = mongoConnection.model(User.name, UserSchema);
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [UsersService],
+      providers: [
+        UsersService,
+        {
+          provide: getModelToken(User.name),
+          useValue: userModel
+        }
+      ],
     }).compile();
 
     usersController = module.get<UsersController>(UsersController);
     usersService = module.get<UsersService>(UsersService);
+  });
+
+  afterAll(async () => {
+    const collections = mongoConnection.collections;
+    for (const key in collections) {
+      const collection = collections[key];
+      await collection.deleteMany({});
+    }
+    await mongoConnection.dropDatabase();
+    await mongoConnection.close();
+    await mongod.stop();
   });
 
   it('should be defined', () => {
@@ -22,19 +61,27 @@ describe('UsersController', () => {
 
   describe('create', () => {
     it('should create a new user', async () => {
-      const userData = {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        phone: 5555555555,
-        username: 'johndoe',
-        password: '@sD123'
-      };
-
       jest.spyOn(usersService, 'create').mockImplementation(async () => userData);
       const result = await usersController.create(userData);
 
-      expect(result).toEqual(expect.objectContaining({
-        id: expect.any(Number),
+      expect(result).toMatchObject(expect.objectContaining({
+        _id: expect.any(String),
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        username: userData.username,
+        password: expect.any(String)
+      }));
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return a user by ID', async () => {
+      jest.spyOn(usersService, 'findOne').mockImplementation(async () => userData);
+      const result = await usersController.findOne(userData._id);
+
+      expect(result).toMatchObject(expect.objectContaining({
+        _id: userData._id,
         name: userData.name,
         email: userData.email,
         phone: userData.phone,
@@ -43,36 +90,13 @@ describe('UsersController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should return a user by ID', async () => {
-      const userId = 1;
-
-      const result = await usersController.findOne(userId);
-
-      expect(result).toEqual(expect.objectContaining({
-        id: userId,
-        name: expect.any(String),
-        email: expect.any(String),
-        phone: expect.any(String),
-        username: expect.any(String)
-      }));
-    });
-  });
-
   describe('update', () => {
     it('should update an existing user', async () => {
-      const userId = 1;
-      const userData = {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        phone: 5555555555
-      };
-
       jest.spyOn(usersService, 'update').mockImplementation(async () => userData);
-      const result = await usersController.update(userId, userData);
+      const result = await usersController.update(userData._id, userData);
 
-      expect(result).toEqual(expect.objectContaining({
-        id: userId,
+      expect(result).toMatchObject(expect.objectContaining({
+        _id: userData._id,
         name: userData.name,
         email: userData.email,
         phone: userData.phone
@@ -82,22 +106,24 @@ describe('UsersController', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const users = [
-        { id: 1, name: 'John Doe', email: 'johndoe@example.com', phone: 5555555555, username: 'johndoe' }
-      ];
-
-      jest.spyOn(usersService, 'findAll').mockImplementation(async () => users);
+      jest.spyOn(usersService, 'findAll').mockImplementation(async () => [userData]);
       const result = await usersController.findAll();
 
-      expect(result).toEqual(users);
+      expect(result).toHaveLength(1);
+      expect(result).toContainEqual(expect.objectContaining({
+        _id: expect.any(String),
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        username: userData.username,
+        password: expect.any(String)
+      }));
     });
   });
 
   describe('remove', () => {
     it('should remove an existing user', async () => {
-      const userId = 1;
-
-      const result = await usersService.remove(userId);
+      const result = await usersController.remove(userData._id);
 
       expect(result).toEqual({ success: true });
     });
