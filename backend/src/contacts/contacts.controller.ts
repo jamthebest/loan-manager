@@ -11,13 +11,15 @@ export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
 
   @Post()
-  create(@Body() createContactDto: CreateContactDto, @Req() request: Request) {
-    createContactDto.userOwner = request.user._id;
+  create(@Body() createContactDto: CreateContactDto, @Req() request?: Request) {
+    if (request) {
+      createContactDto.userOwner = request.user._id;
+    }
     return this.contactsService.create(createContactDto);
   }
 
   @Get()
-  findAll(@Req() request: Request) {
+  findAll(@Req() request?: Request) {
     return this.contactsService.findAll(request);
   }
 

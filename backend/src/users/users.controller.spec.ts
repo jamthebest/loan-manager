@@ -5,7 +5,6 @@ import { getModelToken } from "@nestjs/mongoose";
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User, UserSchema } from './schemas/user.schema';
-import { HttpException } from '@nestjs/common';
 
 let userData = {
   _id: '507f1f77bcf86cd799439011',
