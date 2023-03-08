@@ -15,8 +15,8 @@ export class PaymentsService {
     return createdPayment.save();
   }
 
-  async findAll(request: Request): Promise<Partial<Payment[]>> {
-    return this.paymentModel.find(request.query).setOptions({ sanitizeFilter: true }).exec();
+  async findAll(request?: Request): Promise<Partial<Payment[]>> {
+    return this.paymentModel.find(request && request.query || {}).setOptions({ sanitizeFilter: true }).exec();
   }
 
   async findOne(id: string): Promise<Payment> {

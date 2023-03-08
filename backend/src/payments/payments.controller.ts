@@ -16,7 +16,7 @@ export class PaymentsController {
   }
 
   @Get()
-  findAll(@Req() request: Request) {
+  findAll(@Req() request?: Request) {
     return this.paymentsService.findAll(request);
   }
 
