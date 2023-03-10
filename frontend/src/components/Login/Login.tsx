@@ -38,7 +38,7 @@ export default function SignIn() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
 
     const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setUsername(event.target.value);
@@ -59,6 +59,7 @@ export default function SignIn() {
             // Store the token in the global state of the application for use in future calls
         } catch (error) {
             setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
+            setOpen(true);
         }
     };
 
@@ -122,7 +123,7 @@ export default function SignIn() {
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href='/sign-up' variant='body2'>
+                                <Link href='/register' variant='body2'>
                                     {'Don\'t have an account? Sign Up'}
                                 </Link>
                             </Grid>
@@ -134,6 +135,7 @@ export default function SignIn() {
                     <Box sx={{ width: '100%' }}>
                         <Collapse in={open}>
                             <Alert
+                                severity='error'
                                 action={
                                     <IconButton
                                         aria-label='close'
@@ -151,15 +153,6 @@ export default function SignIn() {
                                 {errorMessage}
                             </Alert>
                         </Collapse>
-                        <Button
-                            disabled={open}
-                            variant='outlined'
-                            onClick={() => {
-                                setOpen(true);
-                            }}
-                        >
-                            Re-open
-                        </Button>
                     </Box>
                 )}
             </Container>

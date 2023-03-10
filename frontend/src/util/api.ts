@@ -1,8 +1,11 @@
 /**
  * Utilities for intercepting API requests and responses.
  */
-import axios, { InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { API_URL } from '../config'
+// import dotenv from 'dotenv';
+
+// console.log(dotenv.config());
 
 /**
  * Subscribe a callback for intercepting requests or responses and changing its configuration properties.
