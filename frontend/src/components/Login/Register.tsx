@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -16,6 +15,8 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AxiosError } from 'axios';
+import { register, login } from '../../services/auth.service';
 import API from '../../util/api';
 import _ from 'lodash';
 
@@ -35,6 +36,8 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignUp() {
+    let navigate: NavigateFunction = useNavigate();
+
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -65,25 +68,17 @@ export default function SignUp() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        try {
-            const register = await API.post('/user/create', {
-                name: name + ' ' + lastName,
-                email,
-                username,
-                password,
-            });
-            if (register) {
-                const response = await API.post('/auth/login', {
-                    username,
-                    password,
-                });
-                const token = _.get(response, 'data.token');
-                // Store the token in the global state of the application for use in future calls
+        register(name + ' ' + lastName, email, username, password).then(
+            () => {
+                login(username, password).then(() => {
+                    navigate('/profile');
+                    // window.location.reload();
+                })
             }
-        } catch (error) {
+        ).catch((error: AxiosError) => {
             setErrorMessage(_.get(error, 'response.data.message', 'Register error'));
             setOpen(true);
-        }
+        });
     };
 
     return (

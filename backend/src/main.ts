@@ -17,6 +17,8 @@ async function bootstrap() {
   // Path where the documentation will be
   SwaggerModule.setup('docs', app, document);
 
+  app.enableCors();
+  
   await app.listen(3000);
 }
 bootstrap();
