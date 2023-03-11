@@ -11,6 +11,7 @@ import Login from './components/Login/Login';
 import Register from './components/Login/Register';
 import Profile from './components/Profile';
 import Home from './components/Home';
+import Contacts from './components/Contacts';
 
 import EventBus from './common/EventBus';
 
@@ -29,12 +30,24 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
+import axios from 'axios';
+import { useAuthHeader } from 'react-auth-kit';
+
 const App = () => {
   const [currentUser, setCurrentUser] = useState<AuthStateUserObject | undefined>(undefined);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const signOut = useSignOut();
   const auth = useAuthUser();
+
+  try {
+    const authHeader = useAuthHeader();
+    const token = authHeader();
+    if (token) {
+      // config.headers.Authorization = token;
+      axios.defaults.headers.common['Authorization'] = `${token}`;
+    }
+  } catch (e) { console.log('error', e) }
 
   const navigate: NavigateFunction = useNavigate();
 
@@ -61,7 +74,6 @@ const App = () => {
 
   useEffect(() => {
     const user = auth();
-    console.log(user);
 
     if (user) {
       setCurrentUser(user);
@@ -201,6 +213,7 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<RequireAuth loginPath='/login'><Profile /></RequireAuth>} />
+          <Route path='/contacts' element={<RequireAuth loginPath='/login'><Contacts /></RequireAuth>} />
           {/* <Route path='/user' element={<BoardUser />} />
            <Route path='/mod' element={<BoardModerator />} />
            <Route path='/admin' element={<BoardAdmin />} /> */}
