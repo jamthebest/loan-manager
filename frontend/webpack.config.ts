@@ -8,7 +8,7 @@ import 'webpack-dev-server'
 const nodeEnv = process.env.NODE_ENV ?? 'development'
 const env = dotenv.config().parsed ?? {}
 
-console.log('Environment variables', env)
+console.log('Environment variables', env, nodeEnv)
 
 const configuration: webpack.Configuration = {
   mode: nodeEnv !== 'production' ? 'development' : 'production',
@@ -47,9 +47,16 @@ const configuration: webpack.Configuration = {
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
-      },
+        test: /\.(jpe?g|gif|png|svg)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000
+            }
+          }
+        ]
+      }
     ],
   },
   plugins: [
