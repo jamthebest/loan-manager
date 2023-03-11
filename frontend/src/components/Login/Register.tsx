@@ -19,6 +19,10 @@ import { AxiosError } from 'axios';
 import { register, login } from '../../services/auth.service';
 import _ from 'lodash';
 
+import axios from 'axios';
+import { useSignIn } from 'react-auth-kit';
+import { API_URL } from '../../config';
+
 function Copyright(props: any) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -35,7 +39,8 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignUp() {
-    let navigate: NavigateFunction = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
+    const signIn = useSignIn();
 
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -69,10 +74,21 @@ export default function SignUp() {
         event.preventDefault();
         register(name + ' ' + lastName, email, username, password).then(
             () => {
-                login(username, password).then(() => {
-                    navigate('/');
-                    // window.location.reload();
-                })
+                return axios
+                    .post(API_URL + 'auth/login/', {
+                        username,
+                        password,
+                    })
+                    .then((response) => {
+                        signIn({
+                            token: response.data.access_token,
+                            expiresIn: 10,
+                            tokenType: 'Bearer',
+                            authState: { id: response.data.id, email: response.data.email, name: response.data.name, username }
+                        });
+                        navigate('/');
+                        window.location.reload();
+                    })
             }
         ).catch((error: AxiosError) => {
             setErrorMessage(_.get(error, 'response.data.message', 'Register error'));

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { API_URL } from '../config'
+import { useSignIn } from 'react-auth-kit';
+import { API_URL } from '../config';
 
 export const register = (name: string, email: string, username: string, password: string) => {
     return axios.post(API_URL + 'users/', {
@@ -10,16 +11,20 @@ export const register = (name: string, email: string, username: string, password
     });
 };
 
-export const login = (username: string, password: string) => {
+export const login = async (username: string, password: string) => {
+    const signIn = useSignIn();
     return axios
         .post(API_URL + 'auth/login/', {
             username,
             password,
         })
         .then((response) => {
-            if (response.data.access_token) {
-                localStorage.setItem('user', JSON.stringify(response.data));
-            }
+            signIn({
+                token: response.data.access_token,
+                expiresIn: 10,
+                tokenType: 'Bearer',
+                authState: { id: response.data.id, email: response.data.email, name: response.data.name, username }
+            });
             return response.data;
         });
 };

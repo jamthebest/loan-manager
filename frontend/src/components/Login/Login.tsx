@@ -18,8 +18,11 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AxiosError } from 'axios';
-import { login } from '../../services/auth.service';
 import _ from 'lodash';
+
+import axios from 'axios';
+import { useSignIn } from 'react-auth-kit';
+import { API_URL } from '../../config';
 
 function Copyright(props: any) {
     return (
@@ -37,7 +40,8 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignIn() {
-    let navigate: NavigateFunction = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
+    const signIn = useSignIn();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -54,15 +58,34 @@ export default function SignIn() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        login(username, password).then(
-            () => {
+        axios
+            .post(API_URL + 'auth/login/', {
+                username,
+                password,
+            })
+            .then((response) => {
+                signIn({
+                    token: response.data.access_token,
+                    expiresIn: 10,
+                    tokenType: 'Bearer',
+                    authState: { id: response.data.id, email: response.data.email, name: response.data.name, username }
+                });
                 navigate('/');
-                // window.location.reload();
-            }
-        ).catch((error: AxiosError) => {
-            setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
-            setOpen(true);
-        });
+                window.location.reload();
+            }).catch((error: AxiosError) => {
+                setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
+                setOpen(true);
+            });
+        // login(username, password).then(
+        //     () => {
+        //         navigate('/');
+        //         window.location.reload();
+        //     }
+        // ).catch((error: AxiosError) => {
+        //     console.log(error);
+        //     setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
+        //     setOpen(true);
+        // });
     };
 
     return (
