@@ -17,7 +17,7 @@ export const login = (username: string, password: string) => {
             password,
         })
         .then((response) => {
-            if (response.data.accessToken) {
+            if (response.data.access_token) {
                 localStorage.setItem('user', JSON.stringify(response.data));
             }
             return response.data;

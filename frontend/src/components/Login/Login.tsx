@@ -56,7 +56,7 @@ export default function SignIn() {
         event.preventDefault();
         login(username, password).then(
             () => {
-                navigate('/profile');
+                navigate('/');
                 // window.location.reload();
             }
         ).catch((error: AxiosError) => {

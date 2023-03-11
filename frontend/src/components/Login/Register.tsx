@@ -17,7 +17,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AxiosError } from 'axios';
 import { register, login } from '../../services/auth.service';
-import API from '../../util/api';
 import _ from 'lodash';
 
 function Copyright(props: any) {
@@ -71,7 +70,7 @@ export default function SignUp() {
         register(name + ' ' + lastName, email, username, password).then(
             () => {
                 login(username, password).then(() => {
-                    navigate('/profile');
+                    navigate('/');
                     // window.location.reload();
                 })
             }

@@ -31,7 +31,11 @@ export class AuthService {
         const payload = { username: user.username, sub: user._id };
         // Generate a JWT token using the JWT service's sign() method with the payload and return it
         return {
-            access_token: this.jwtService.sign(payload)
+            access_token: this.jwtService.sign(payload),
+            id: user._id,
+            username: user.username,
+            name: user.name,
+            email: user.email
         };
     }
 }
