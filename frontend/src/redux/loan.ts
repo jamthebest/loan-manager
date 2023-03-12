@@ -3,12 +3,12 @@ import axios from 'axios';
 import { State } from './redux';
 import { API_URL } from '../config';
 
-const name = 'contact';
+const name = 'loan';
 
 /*
-    Get contacts of the logged user
+    Get loans of the logged user
 */
-const list = createAsyncThunk(`${name}/list`, async (params?: ContactParams) => {
+const list = createAsyncThunk(`${name}/list`, async (params?: LoanParams) => {
     let query: { skip?: number, limit?: number } = {};
     if (params) {
         if (params.page) {
@@ -16,31 +16,31 @@ const list = createAsyncThunk(`${name}/list`, async (params?: ContactParams) => 
             query.skip = 10 * (params.page - 1);
         }
     }
-    const response = (await axios.get<Array<Contact>>(`${API_URL}contacts/?query=${JSON.stringify(query)}`, {})).data;
+    const response = (await axios.get<Array<Loan>>(`${API_URL}loans/?query=${JSON.stringify(query)}`, {})).data;
     return response;
 });
 
 /**
- * Create a new Contact
+ * Create a new Loan
  */
-const create = createAsyncThunk(`${name}/create`, async (data: Contact) => {
-    return (await axios.post<Contact>(`${API_URL}contacts/`, data)).data;
+const create = createAsyncThunk(`${name}/create`, async (data: Loan) => {
+    return (await axios.post<Loan>(`${API_URL}loans/`, data)).data;
 });
 
 /**
- * Update the current `contact`
+ * Update the current `loan`
  */
-const update = createAsyncThunk(`${name}/submit`, async (contactId: string, thunkAPI) => {
-    const contact: Contact | undefined = (thunkAPI.getState() as State).contact.value;
-    if (!contact) throw new Error('No contact in store');
-    return (await axios.patch<Contact>(`${API_URL}contacts/${contactId}`, contact)).data;
+const update = createAsyncThunk(`${name}/submit`, async (loanId: string, thunkAPI) => {
+    const loan: Loan | undefined = (thunkAPI.getState() as State).loan.value;
+    if (!loan) throw new Error('No loan in store');
+    return (await axios.patch<Loan>(`${API_URL}loans/${loanId}`, loan)).data;
 });
 
 /**
- * Create a new Contact
+ * Create a new Loan
  */
-const remove = createAsyncThunk(`${name}/create`, async (contactId: string) => {
-    return (await axios.delete<Contact>(`${API_URL}contacts/${contactId}`)).data;
+const remove = createAsyncThunk(`${name}/create`, async (loanId: string) => {
+    return (await axios.delete<Loan>(`${API_URL}loans/${loanId}`)).data;
 });
 
 export const extraActions = { list, create, update, remove };
@@ -51,17 +51,17 @@ export const slice = createSlice({
         pending: false
     } as {
         pending: boolean,
-        value?: Contact,
-        changed?: Contact,
-        changes?: Contact,
+        value?: Loan,
+        changed?: Loan,
+        changes?: Loan,
         error?: SerializedError,
-        list?: Array<Contact>
+        list?: Array<Loan>
     },
     reducers: {
-        edit(state, action: PayloadAction<Contact>) {
-            state.value = state.list?.filter(contact => { return contact._id === action.payload._id; })[0];
+        edit(state, action: PayloadAction<Loan>) {
+            state.value = state.list?.filter(loan => { return loan._id === action.payload._id; })[0];
             if (!state.value) {
-                throw new Error('No contact in store');
+                throw new Error('No loan in store');
             }
             state.changes = { ...(state.changes ?? {}), ...action.payload };
             state.changed = { ...state.value, ...state.changes };
@@ -117,13 +117,15 @@ export const slice = createSlice({
     }
 });
 
-export type Contact = {
+export type Loan = {
     _id?: string,
-    name: string,
-    email: string,
-    phone: string,
+    contactId: string,
+    amount: number,
+    interest: number,
+    date: string,
+    status?: string
 };
 
-export type ContactParams = {
+export type LoanParams = {
     page: number
 };

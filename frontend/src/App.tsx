@@ -12,6 +12,7 @@ import Register from './pages/Login/Register';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Contacts from './pages/Contacts';
+import Loans from './pages/Loans';
 
 import EventBus from './common/EventBus';
 
@@ -214,6 +215,7 @@ const App = () => {
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<RequireAuth loginPath='/login'><Profile /></RequireAuth>} />
           <Route path='/contacts' element={<RequireAuth loginPath='/login'><Contacts /></RequireAuth>} />
+          <Route path='/loans' element={<RequireAuth loginPath='/login'><Loans /></RequireAuth>} />
           {/* <Route path='/user' element={<BoardUser />} />
            <Route path='/mod' element={<BoardModerator />} />
            <Route path='/admin' element={<BoardAdmin />} /> */}
