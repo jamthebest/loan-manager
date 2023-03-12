@@ -26,9 +26,18 @@ const list = createAsyncThunk(`${name}/list`, async (params?: ContactParams) => 
  */
 const create = createAsyncThunk(`${name}/create`, async (data: Contact) => {
     return (await axios.post<Contact>(`${API_URL}contacts/`, data)).data;
+});
+
+/**
+ * Update the current `contact`
+ */
+const update = createAsyncThunk(`${name}/submit`, async (contactId: string, thunkAPI) => {
+    const contact: Contact | undefined = (thunkAPI.getState() as State).contact.value;
+    if (!contact) throw new Error('No contact in store');
+    return (await axios.patch<Contact>(`${API_URL}contacts/${contactId}`, contact)).data;
 })
 
-export const extraActions = { list, create };
+export const extraActions = { list, create, update };
 
 export const slice = createSlice({
     name,
@@ -43,7 +52,8 @@ export const slice = createSlice({
         list?: Array<Contact>
     },
     reducers: {
-        update(state, action: PayloadAction<Contact>) {
+        edit(state, action: PayloadAction<Contact>) {
+            state.value = state.list?.filter(contact => { return contact._id === action.payload._id; })[0];
             if (!state.value) {
                 throw new Error('No contact in store');
             }
@@ -84,11 +94,23 @@ export const slice = createSlice({
             state.value = action.payload;
             state.changed = { ...state.value, ...state.changes };
         });
+        builder.addCase(update.pending, state => {
+            state.pending = true;
+        });
+        builder.addCase(update.rejected, (state, action) => {
+            state.pending = false;
+            state.error = action.error;
+        });
+        builder.addCase(update.fulfilled, (state, action) => {
+            state.pending = false;
+            state.value = action.payload;
+            state.changed = { ...state.value, ...state.changes };
+        });
     }
 });
 
 export type Contact = {
-    id?: string,
+    _id?: string,
     name: string,
     email: string,
     phone: string,

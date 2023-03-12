@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from '@mui/material';
-import { debounce } from 'lodash';
 import { actions, useTypedDispatch, useTypedSelector } from '../redux/redux';
+import { Contact } from '../redux/contact';
 import _ from 'lodash';
 import FabButton from '../components/FabButton';
 import CreateContact from '../components/ContactCreate';
@@ -9,17 +9,9 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
-import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
-interface Contact {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-};
 
 const Contacts = () => {
     const dispatch = useTypedDispatch();
@@ -31,6 +23,7 @@ const Contacts = () => {
     const [page, setPage] = useState<number>(1);
     const [createOpen, setCreateOpen] = useState<boolean>(false);
     const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [contactToEdit, setContactToEdit] = useState<Contact | undefined>(undefined);
 
     useEffect(() => {
         dispatch(actions.contact.list({ page }));
@@ -40,7 +33,11 @@ const Contacts = () => {
         setPage(newPage);
     };
 
-    const handleDelete = (id: string) => {};
+    const handleDelete = (id: string) => { };
+    const handleEdit = (id: string) => {
+        setContactToEdit(contacts?.filter(con => { return con._id === id; })[0]);
+        setCreateOpen(true);
+    };
 
     return (
         <Container>
@@ -59,10 +56,10 @@ const Contacts = () => {
                             {_.map(contacts || [], (contact: Contact) => (
                                 <TableRow key={contact.email}>
                                     <TableCell align="right">
-                                        <IconButton color="inherit" onClick={() => handleDelete(contact.id)}>
+                                        <IconButton color="inherit" onClick={() => handleDelete(contact._id ?? '')}>
                                             <DeleteIcon />
                                         </IconButton>
-                                        <IconButton color="inherit">
+                                        <IconButton color="inherit" onClick={() => handleEdit(contact._id ?? '')}>
                                             <EditIcon />
                                         </IconButton>
                                     </TableCell>
@@ -84,8 +81,14 @@ const Contacts = () => {
                 </TableContainer>
             </Grid>
             {pending && <p>Loading...</p>}
-            <FabButton onClick={() => { setCreateOpen(true); }}></FabButton>
-            <CreateContact open={createOpen} onClose={() => { setCreateOpen(false); }} onCreate={() => { setShowAlert(true); setCreateOpen(false); }}></CreateContact>
+            <FabButton onClick={() => { setCreateOpen(true); setContactToEdit(undefined); }}></FabButton>
+            <CreateContact open={createOpen}
+                onClose={() => {
+                    setCreateOpen(false);
+                    setContactToEdit(undefined);
+                }} onCreate={() => { setShowAlert(true); setCreateOpen(false); }}
+                contact={contactToEdit}
+            ></CreateContact>
             <Box sx={{ width: '100%' }}>
                 <Collapse in={showAlert}>
                     <Alert
@@ -103,11 +106,11 @@ const Contacts = () => {
                         }
                         sx={{ mb: 2 }}
                     >
-                        Contact Created!
+                        {!contactToEdit ? 'Contact Created!' : 'Contact Updated!'}
                     </Alert>
                 </Collapse>
             </Box>
-        </Container>
+        </Container >
     );
 };
 
