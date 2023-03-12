@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from '@mui/material';
+import { Button, Container, Dialog, DialogActions, DialogTitle, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { actions, useTypedDispatch, useTypedSelector } from '../redux/redux';
 import { Contact } from '../redux/contact';
 import _ from 'lodash';
@@ -23,20 +23,30 @@ const Contacts = () => {
     const [page, setPage] = useState<number>(1);
     const [createOpen, setCreateOpen] = useState<boolean>(false);
     const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
     const [contactToEdit, setContactToEdit] = useState<Contact | undefined>(undefined);
 
     useEffect(() => {
         dispatch(actions.contact.list({ page }));
-    }, [page, createOpen]);
+    }, [page, createOpen, isDeleteAlertOpen]);
 
-    const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    const handlePageChange = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
     };
 
-    const handleDelete = (id: string) => { };
+    const handleDelete = (id: string) => {
+        setContactToEdit(contacts?.filter(con => { return con._id === id; })[0]);
+        setIsDeleteAlertOpen(true);
+    };
     const handleEdit = (id: string) => {
         setContactToEdit(contacts?.filter(con => { return con._id === id; })[0]);
         setCreateOpen(true);
+    };
+    const handleDeleteAlertClose = (willDeleted: boolean) => {
+        setIsDeleteAlertOpen(false);
+        if (willDeleted && contactToEdit?._id) {
+            dispatch(actions.contact.remove(contactToEdit._id));
+        }
     };
 
     return (
@@ -55,11 +65,11 @@ const Contacts = () => {
                         <TableBody>
                             {_.map(contacts || [], (contact: Contact) => (
                                 <TableRow key={contact.email}>
-                                    <TableCell align="right">
-                                        <IconButton color="inherit" onClick={() => handleDelete(contact._id ?? '')}>
+                                    <TableCell align='left'>
+                                        <IconButton color='error' onClick={() => handleDelete(contact._id ?? '')}>
                                             <DeleteIcon />
                                         </IconButton>
-                                        <IconButton color="inherit" onClick={() => handleEdit(contact._id ?? '')}>
+                                        <IconButton color='success' onClick={() => handleEdit(contact._id ?? '')}>
                                             <EditIcon />
                                         </IconButton>
                                     </TableCell>
@@ -82,6 +92,7 @@ const Contacts = () => {
             </Grid>
             {pending && <p>Loading...</p>}
             <FabButton onClick={() => { setCreateOpen(true); setContactToEdit(undefined); }}></FabButton>
+
             <CreateContact open={createOpen}
                 onClose={() => {
                     setCreateOpen(false);
@@ -89,19 +100,20 @@ const Contacts = () => {
                 }} onCreate={() => { setShowAlert(true); setCreateOpen(false); }}
                 contact={contactToEdit}
             ></CreateContact>
+
             <Box sx={{ width: '100%' }}>
                 <Collapse in={showAlert}>
                     <Alert
                         action={
                             <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
+                                aria-label='close'
+                                color='inherit'
+                                size='small'
                                 onClick={() => {
                                     setShowAlert(false);
                                 }}
                             >
-                                <CloseIcon fontSize="inherit" />
+                                <CloseIcon fontSize='inherit' />
                             </IconButton>
                         }
                         sx={{ mb: 2 }}
@@ -110,6 +122,25 @@ const Contacts = () => {
                     </Alert>
                 </Collapse>
             </Box>
+
+            <div>
+                <Dialog
+                    open={isDeleteAlertOpen}
+                    onClose={() => { handleDeleteAlertClose(false) }}
+                    aria-labelledby='alert-dialog-title'
+                    aria-describedby='alert-dialog-description'
+                >
+                    <DialogTitle id='alert-dialog-title'>
+                        Are you sure you want to delete?
+                    </DialogTitle>
+                    <DialogActions>
+                        <Button onClick={() => { handleDeleteAlertClose(false) }}>Cancel</Button>
+                        <Button onClick={() => { handleDeleteAlertClose(true) }} variant='contained' color='error'>
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
         </Container >
     );
 };

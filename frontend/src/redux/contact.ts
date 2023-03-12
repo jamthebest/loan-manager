@@ -35,9 +35,16 @@ const update = createAsyncThunk(`${name}/submit`, async (contactId: string, thun
     const contact: Contact | undefined = (thunkAPI.getState() as State).contact.value;
     if (!contact) throw new Error('No contact in store');
     return (await axios.patch<Contact>(`${API_URL}contacts/${contactId}`, contact)).data;
-})
+});
 
-export const extraActions = { list, create, update };
+/**
+ * Create a new Contact
+ */
+const remove = createAsyncThunk(`${name}/create`, async (contactId: string) => {
+    return (await axios.delete<Contact>(`${API_URL}contacts/${contactId}`)).data;
+});
+
+export const extraActions = { list, create, update, remove };
 
 export const slice = createSlice({
     name,
@@ -82,6 +89,7 @@ export const slice = createSlice({
             state.pending = false;
             state.list = action.payload;
         });
+
         builder.addCase(create.pending, state => {
             state.pending = true;
         });
@@ -94,6 +102,7 @@ export const slice = createSlice({
             state.value = action.payload;
             state.changed = { ...state.value, ...state.changes };
         });
+
         builder.addCase(update.pending, state => {
             state.pending = true;
         });

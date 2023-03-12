@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
-import { actions, useTypedDispatch, useTypedSelector } from '../redux/redux';
+import { actions, useTypedDispatch } from '../redux/redux';
 import { Contact } from '../redux/contact';
 import _ from 'lodash';
 
