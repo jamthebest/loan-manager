@@ -7,11 +7,11 @@ import './App.css';
 
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 
-import Login from './components/Login/Login';
-import Register from './components/Login/Register';
-import Profile from './components/Profile';
-import Home from './components/Home';
-import Contacts from './components/Contacts';
+import Login from './pages/Login/Login';
+import Register from './pages/Login/Register';
+import Profile from './pages/Profile';
+import Home from './pages/Home';
+import Contacts from './pages/Contacts';
 
 import EventBus from './common/EventBus';
 

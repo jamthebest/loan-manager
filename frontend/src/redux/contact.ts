@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction, SerializedError } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { State } from './redux';
 import { API_URL } from '../config';
 
 const name = 'contact';
@@ -20,7 +21,14 @@ const list = createAsyncThunk(`${name}/list`, async (params?: ContactParams) => 
     return response;
 });
 
-export const extraActions = { list };
+/**
+ * Create a new Contact
+ */
+const create = createAsyncThunk(`${name}/create`, async (data: Contact) => {
+    return (await axios.post<Contact>(`${API_URL}contacts/`, data)).data;
+})
+
+export const extraActions = { list, create };
 
 export const slice = createSlice({
     name,
@@ -30,12 +38,12 @@ export const slice = createSlice({
         pending: boolean,
         value?: Contact,
         changed?: Contact,
-        changes?: Partial<Contact>,
+        changes?: Contact,
         error?: SerializedError,
-        list: Array<Contact>
+        list?: Array<Contact>
     },
     reducers: {
-        update(state, action: PayloadAction<Partial<Contact>>) {
+        update(state, action: PayloadAction<Contact>) {
             if (!state.value) {
                 throw new Error('No contact in store');
             }
@@ -43,12 +51,12 @@ export const slice = createSlice({
             state.changed = { ...state.value, ...state.changes };
         },
         reset(state) {
-            state.changed = state.value
-            delete state.changes
+            state.changed = state.value;
+            delete state.changes;
         },
         commit(state) {
-            state.value = state.changed ?? state.value
-            delete state.changes
+            state.value = state.changed ?? state.value;
+            delete state.changes;
         },
     },
     extraReducers: builder => {
@@ -63,6 +71,18 @@ export const slice = createSlice({
         builder.addCase(list.fulfilled, (state, action) => {
             state.pending = false;
             state.list = action.payload;
+        });
+        builder.addCase(create.pending, state => {
+            state.pending = true;
+        });
+        builder.addCase(create.rejected, (state, action) => {
+            state.pending = false;
+            state.error = action.error;
+        });
+        builder.addCase(create.fulfilled, (state, action) => {
+            state.pending = false;
+            state.value = action.payload;
+            state.changed = { ...state.value, ...state.changes };
         });
     }
 });
