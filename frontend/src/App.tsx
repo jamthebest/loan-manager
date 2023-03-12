@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Contacts from './pages/Contacts';
 import Loans from './pages/Loans';
+import Payments from './pages/Payments';
 
 import EventBus from './common/EventBus';
 
@@ -210,15 +211,12 @@ const App = () => {
         <Toolbar />
         <Routes>
           <Route path='/' element={<Home />} />
-          {/* <Route path='/home' element={<Home />} /> */}
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<RequireAuth loginPath='/login'><Profile /></RequireAuth>} />
           <Route path='/contacts' element={<RequireAuth loginPath='/login'><Contacts /></RequireAuth>} />
           <Route path='/loans' element={<RequireAuth loginPath='/login'><Loans /></RequireAuth>} />
-          {/* <Route path='/user' element={<BoardUser />} />
-           <Route path='/mod' element={<BoardModerator />} />
-           <Route path='/admin' element={<BoardAdmin />} /> */}
+          <Route path='/payments' element={<RequireAuth loginPath='/login'><Payments /></RequireAuth>} />
         </Routes>
       </Box>
     </Box>

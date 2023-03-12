@@ -15,6 +15,6 @@ export class CreateLoanDto {
     @ApiProperty({ example: '2023-02-28' })
     date: string;
 
-    @ApiProperty({ example: 'P', enum: ['A - Active', 'P - Paid', 'C - Cancelled'] })
+    @ApiProperty({ example: 'A', enum: ['A - Active', 'P - Paid', 'C - Cancelled'] })
     status?: string;
 }

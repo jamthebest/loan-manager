@@ -15,7 +15,7 @@ export class LoansController {
     if (request) {
       createLoanDto.userId = request.user._id;
     }
-    createLoanDto.status = 'P'; // Pending
+    createLoanDto.status = 'A'; // Active
     return this.loansService.create(createLoanDto);
   }
 
