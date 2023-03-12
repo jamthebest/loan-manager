@@ -6,6 +6,8 @@ export class UpdateLoanDto extends PartialType(CreateLoanDto) {
     @ApiProperty({ example: '1000.00' })
     amount?: number;
 
+    balance?: number;
+
     @ApiProperty({ example: 20, minimum: 0, maximum: 100 })
     interest?: number;
 

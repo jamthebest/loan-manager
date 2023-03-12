@@ -121,6 +121,7 @@ export type Loan = {
     _id?: string,
     contactId: string,
     amount: number,
+    balance?: number,
     interest: number,
     date: string,
     status?: string

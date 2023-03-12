@@ -103,6 +103,7 @@ const Loans = () => {
                                 <TableCell>Actions</TableCell>
                                 <TableCell>Contact</TableCell>
                                 <TableCell>Amount</TableCell>
+                                <TableCell>Balance</TableCell>
                                 <TableCell>Interest</TableCell>
                                 <TableCell>Date</TableCell>
                                 <TableCell>Status</TableCell>
@@ -127,6 +128,7 @@ const Loans = () => {
                                     </TableCell>
                                     <TableCell>{(contacts || []).filter(contact => { return contact._id === loan.contactId })[0]?.name}</TableCell>
                                     <TableCell>{loan.amount}</TableCell>
+                                    <TableCell>{loan.balance}</TableCell>
                                     <TableCell>{loan.interest}</TableCell>
                                     <TableCell>{loan.date}</TableCell>
                                     <TableCell>{getStatusMap(loan.status)}</TableCell>

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePaymentDto {
-    @ApiProperty({ example: '1' })
-    loanId: number;
+    @ApiProperty({ example: '507c7f79bcf86cd7994f6c0e' })
+    loanId: string;
 
     @ApiProperty({ example: '1000.00' })
     amount: number;

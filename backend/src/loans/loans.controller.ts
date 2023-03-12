@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { LoansService } from './loans.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
+import { UpdateBalanceDto } from './dto/update-balance.dto';
 
 @Controller('loans')
 @ApiTags('loan')  // OpenAPI decorator to group endpoints in Swagger UI
@@ -16,6 +17,7 @@ export class LoansController {
       createLoanDto.userId = request.user._id;
     }
     createLoanDto.status = 'A'; // Active
+    createLoanDto.balance = createLoanDto.amount;
     return this.loansService.create(createLoanDto);
   }
 
@@ -32,6 +34,11 @@ export class LoansController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
     return this.loansService.update(id, updateLoanDto);
+  }
+
+  @Patch(':id')
+  async updateBalance(@Param('id') id: string, @Body() updateBalanceDto: UpdateBalanceDto) {
+    return this.loansService.updateBalance(id, updateBalanceDto);
   }
 
   @Delete(':id')

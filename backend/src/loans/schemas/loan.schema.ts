@@ -17,6 +17,9 @@ export class Loan {
     amount: number;
 
     @Prop({ required: true })
+    balance: number;
+
+    @Prop({ required: true })
     interest: number;
 
     @Prop({ required: true })
