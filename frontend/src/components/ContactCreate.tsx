@@ -84,9 +84,9 @@ const CreateContactDialog = ({ open, onClose, onCreate, contact }: CreateContact
                     fullWidth
                     margin='normal'
                     value={phone}
-                    type='tel'
+                    type='number'
                     id='create-phone'
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                 />
             </DialogContent>
             <DialogActions>
