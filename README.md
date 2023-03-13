@@ -42,3 +42,8 @@ The frontend folder is structured as follows:
 After installing the project, you can use it to manage your contacts, loans, and payments with simple screens and an intuitive interface. The project is built with React on the frontend and NestJs on the backend.
 
 ## Live Preview
+### Live API
+https://loan-manager-api.onrender.com/docs
+
+### Live client
+https://loan-manager.onrender.com/
