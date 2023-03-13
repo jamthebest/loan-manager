@@ -16,7 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AxiosError } from 'axios';
-import { register, login } from '../../services/auth.service';
+import { register } from '../../services/auth.service';
 import _ from 'lodash';
 
 import axios from 'axios';
