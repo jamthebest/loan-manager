@@ -1,14 +1,14 @@
 import webpack from 'webpack';
 import dotenv from 'dotenv';
 import path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import 'webpack-dev-server'
+import 'webpack-dev-server';
 
-const nodeEnv = process.env.NODE_ENV ?? 'development'
-const env = dotenv.config().parsed ?? {}
+const nodeEnv = process.env.NODE_ENV ?? 'development';
+const env = dotenv.config().parsed ?? process.env ?? {};
 
-console.log('Environment variables', env, nodeEnv)
+console.log('Environment variables', env, nodeEnv);
 
 const configuration: webpack.Configuration = {
   mode: nodeEnv !== 'production' ? 'development' : 'production',
