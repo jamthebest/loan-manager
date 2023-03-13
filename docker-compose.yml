@@ -23,7 +23,7 @@ services:
             - ./backend:/app
             - /app/node_modules
         environment:
-            MONGODB_URL: mongodb
+            MONGODB_HOST: mongodb
         depends_on:
             - mongodb
     frontend:

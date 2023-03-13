@@ -12,7 +12,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(`mongodb://${process.env.MONGODB_URL}:27017/loanapp`),
+    MongooseModule.forRoot(process.env.MONGODB_URL ?? `mongodb://${process.env.MONGODB_HOST}:27017/loanapp`),
     UsersModule,
     ContactsModule,
     LoansModule,
