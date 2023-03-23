@@ -18,6 +18,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AxiosError } from 'axios';
+import Loader from '../../components/Loader';
 import _ from 'lodash';
 
 import axios from 'axios';
@@ -46,7 +47,8 @@ export default function SignIn() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setUsername(event.target.value);
@@ -58,6 +60,7 @@ export default function SignIn() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsLoading(true);
         axios
             .post(API_URL + 'auth/login/', {
                 username,
@@ -70,11 +73,13 @@ export default function SignIn() {
                     tokenType: 'Bearer',
                     authState: { id: response.data.id, email: response.data.email, name: response.data.name, username }
                 });
+                setIsLoading(false);
                 navigate('/');
                 window.location.reload();
             }).catch((error: AxiosError) => {
                 setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
                 setOpen(true);
+                setIsLoading(false);
             });
         // login(username, password).then(
         //     () => {
@@ -91,6 +96,7 @@ export default function SignIn() {
     return (
         <ThemeProvider theme={theme}>
             <Container component='main' maxWidth='xs'>
+                <Loader isOpen={isLoading}></Loader>
                 <CssBaseline />
                 <Box
                     sx={{

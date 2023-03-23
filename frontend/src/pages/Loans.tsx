@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Dialog, DialogActions, DialogTitle, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { actions, useTypedDispatch, useTypedSelector } from '../redux/redux';
 import { Loan } from '../redux/loan';
-import { Contact } from '../redux/contact';
+import Loader from '../components/Loader';
 import _ from 'lodash';
 import FabButton from '../components/FabButton';
 import CreateLoan from '../components/LoanCreate';
@@ -89,12 +89,9 @@ const Loans = () => {
         setIsCancelOpen(false);
     };
 
-    if (pending) {
-        return <div>Loading</div>
-    }
-
     return (
         <Container>
+            <Loader isOpen={pending}></Loader>
             <Grid container spacing={0} justifyContent='center'>
                 <TableContainer component={Paper}>
                     <Table>
@@ -146,7 +143,6 @@ const Loans = () => {
                     />
                 </TableContainer>
             </Grid>
-            {pending && <p>Loading...</p>}
             <FabButton onClick={() => { setCreateOpen(true); setLoanToEdit(undefined); }}></FabButton>
 
             <CreateLoan open={createOpen}

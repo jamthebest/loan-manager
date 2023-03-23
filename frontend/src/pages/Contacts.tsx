@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Dialog, DialogActions, DialogTitle, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { actions, useTypedDispatch, useTypedSelector } from '../redux/redux';
 import { Contact } from '../redux/contact';
+import Loader from '../components/Loader';
 import _ from 'lodash';
 import FabButton from '../components/FabButton';
 import CreateContact from '../components/ContactCreate';
@@ -51,6 +52,7 @@ const Contacts = () => {
 
     return (
         <Container>
+            <Loader isOpen={pending}></Loader>
             <Grid container spacing={0} justifyContent='center'>
                 <TableContainer component={Paper}>
                     <Table>
@@ -90,7 +92,6 @@ const Contacts = () => {
                     />
                 </TableContainer>
             </Grid>
-            {pending && <p>Loading...</p>}
             <FabButton onClick={() => { setCreateOpen(true); setContactToEdit(undefined); }}></FabButton>
 
             <CreateContact open={createOpen}

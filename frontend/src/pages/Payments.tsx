@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { actions, useTypedDispatch, useTypedSelector } from '../redux/redux';
 import { Payment } from '../redux/payment';
+import Loader from '../components/Loader';
 import _ from 'lodash';
 
 const Payments = () => {
@@ -25,12 +26,9 @@ const Payments = () => {
         setPage(newPage);
     };
 
-    if (pending) {
-        return <div>Loading</div>
-    }
-
     return (
         <Container>
+            <Loader isOpen={pending}></Loader>
             <Grid container spacing={0} justifyContent='center'>
                 <TableContainer component={Paper}>
                     <Table>
@@ -71,7 +69,6 @@ const Payments = () => {
                     />
                 </TableContainer>
             </Grid>
-            {pending && <p>Loading...</p>}
         </Container >
     );
 };

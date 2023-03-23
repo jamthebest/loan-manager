@@ -17,6 +17,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AxiosError } from 'axios';
 import { register } from '../../services/auth.service';
+import Loader from '../../components/Loader';
 import _ from 'lodash';
 
 import axios from 'axios';
@@ -49,6 +50,7 @@ export default function SignUp() {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = React.useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleNameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setName(event.target.value);
@@ -72,6 +74,7 @@ export default function SignUp() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsLoading(true);
         register(name + ' ' + lastName, email, username, password).then(
             () => {
                 return axios
@@ -86,6 +89,7 @@ export default function SignUp() {
                             tokenType: 'Bearer',
                             authState: { id: response.data.id, email: response.data.email, name: response.data.name, username }
                         });
+                        setIsLoading(false);
                         navigate('/');
                         window.location.reload();
                     })
@@ -93,12 +97,14 @@ export default function SignUp() {
         ).catch((error: AxiosError) => {
             setErrorMessage(_.get(error, 'response.data.message', 'Register error'));
             setOpen(true);
+            setIsLoading(false);
         });
     };
 
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
+                <Loader isOpen={isLoading}></Loader>
                 <CssBaseline />
                 <Box
                     sx={{
