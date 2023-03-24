@@ -5,8 +5,6 @@ services:
         container_name: mongodb
         env_file:
             - ./backend/.env
-        ports:
-            - 27017:27017
         volumes:
             - mongodb_data_container:/data/db
     backend:
@@ -35,7 +33,7 @@ services:
             context: ./frontend
             dockerfile: Dockerfile
         ports:
-            - "3000:3000"
+            - "8080:8080"
         volumes:
             - ./frontend:/app
             - /app/node_modules

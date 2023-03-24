@@ -91,7 +91,9 @@ export default function SignUp() {
                         });
                         setIsLoading(false);
                         navigate('/');
-                        window.location.reload();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 100);
                     })
             }
         ).catch((error: AxiosError) => {

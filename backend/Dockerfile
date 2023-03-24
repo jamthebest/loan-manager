@@ -1,36 +1,20 @@
-# Initiate a container to build the application in.
-FROM node:18.1.0-alpine3.14
-ENV NODE_ENV=build
-WORKDIR /app
+# Base image
+FROM node:18
 
-# Copy the package.json into the container.
+# Create app directory
+WORKDIR /usr/src/app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 
-# Install the dependencies required to build the application.
+# Install app dependencies
 RUN npm install
 
-# Copy the application source into the container.
-COPY ./ ./
+# Bundle app source
+COPY . .
 
-# Build the application.
+# Creates a "dist" folder with the production build
 RUN npm run build
 
-# Uninstall the dependencies not required to run the built application.
-RUN npm prune --production
-
-# Initiate a new container to run the application in.
-FROM node:18.1.0-alpine3.14
-ENV NODE_ENV=production
-WORKDIR /app
-
-# Copy everything required to run the built application into the new container.
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules/ ./node_modules/
-COPY --from=builder /app/dist/ ./dist/
-
-# Expose the web server's port.
-EXPOSE 3000
-
-# Run the application.
-CMD ["node", "dist/main"]
-# CMD ["npm", "run", "start:dev"]
+# Start the server using the production build
+CMD [ "node", "dist/main.js" ]

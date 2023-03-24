@@ -75,7 +75,9 @@ export default function SignIn() {
                 });
                 setIsLoading(false);
                 navigate('/');
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
             }).catch((error: AxiosError) => {
                 setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
                 setOpen(true);
