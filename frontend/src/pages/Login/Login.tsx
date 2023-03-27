@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -22,8 +21,16 @@ import Loader from '../../components/Loader';
 import _ from 'lodash';
 
 import axios from 'axios';
-import { useSignIn } from 'react-auth-kit';
 import { API_URL } from '../../config';
+
+export type LogInProps = {
+    token: string,
+    user: { id: string, email: string, name: string, username: string }
+};
+
+type SignInProps = {
+    callback: ({ }: LogInProps) => void
+};
 
 function Copyright(props: any) {
     return (
@@ -40,10 +47,7 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export default function SignIn() {
-    const navigate: NavigateFunction = useNavigate();
-    const signIn = useSignIn();
-
+export function SignIn({ callback }: SignInProps) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -67,32 +71,16 @@ export default function SignIn() {
                 password,
             })
             .then((response) => {
-                signIn({
-                    token: response.data.access_token,
-                    expiresIn: 10,
-                    tokenType: 'Bearer',
-                    authState: { id: response.data.id, email: response.data.email, name: response.data.name, username }
-                });
                 setIsLoading(false);
-                navigate('/');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);
+                callback({
+                    token: response.data.access_token,
+                    user: { id: response.data.id, email: response.data.email, name: response.data.name, username }
+                });
             }).catch((error: AxiosError) => {
                 setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
                 setOpen(true);
                 setIsLoading(false);
             });
-        // login(username, password).then(
-        //     () => {
-        //         navigate('/');
-        //         window.location.reload();
-        //     }
-        // ).catch((error: AxiosError) => {
-        //     console.log(error);
-        //     setErrorMessage(_.get(error, 'response.data.message', 'Login error'));
-        //     setOpen(true);
-        // });
     };
 
     return (

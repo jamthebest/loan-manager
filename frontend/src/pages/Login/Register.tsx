@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,8 +20,12 @@ import Loader from '../../components/Loader';
 import _ from 'lodash';
 
 import axios from 'axios';
-import { useSignIn } from 'react-auth-kit';
 import { API_URL } from '../../config';
+import { LogInProps } from './Login';
+
+type SignInProps = {
+    callback: ({ }: LogInProps) => void
+};
 
 function Copyright(props: any) {
     return (
@@ -39,10 +42,7 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export default function SignUp() {
-    const navigate: NavigateFunction = useNavigate();
-    const signIn = useSignIn();
-
+export default function SignUp({ callback }: SignInProps) {
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -83,17 +83,11 @@ export default function SignUp() {
                         password,
                     })
                     .then((response) => {
-                        signIn({
-                            token: response.data.access_token,
-                            expiresIn: 10,
-                            tokenType: 'Bearer',
-                            authState: { id: response.data.id, email: response.data.email, name: response.data.name, username }
-                        });
                         setIsLoading(false);
-                        navigate('/');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 100);
+                        callback({
+                            token: response.data.access_token,
+                            user: { id: response.data.id, email: response.data.email, name: response.data.name, username }
+                        });
                     })
             }
         ).catch((error: AxiosError) => {

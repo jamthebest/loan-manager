@@ -1,13 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { RequireAuth, useSignOut, useAuthUser } from 'react-auth-kit';
+import { RequireAuth, useSignIn, useSignOut, useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { AuthStateUserObject } from 'react-auth-kit/dist/types';
 import './App.css';
 
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 
-import Login from './pages/Login/Login';
+import { SignIn as Login, LogInProps } from './pages/Login/Login';
 import Register from './pages/Login/Register';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
@@ -33,14 +33,38 @@ import MenuItem from '@mui/material/MenuItem';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 import axios from 'axios';
-import { useAuthHeader } from 'react-auth-kit';
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState<AuthStateUserObject | undefined>(undefined);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const signIn = useSignIn();
   const signOut = useSignOut();
   const auth = useAuthUser();
+
+  const logOut = () => {
+    signOut();
+    setCurrentUser(undefined);
+    navigate('/');
+    window.location.reload();
+  };
+  const logIn = async (data: LogInProps) => {
+    const authenticationRes = await signIn({
+      token: data.token,
+      expiresIn: 10,
+      tokenType: 'Bearer',
+      authState: data.user
+    });
+    console.log('authenticationRes', authenticationRes);
+    navigate('/');
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  };
+
+  const pages = [{ name: 'Home', path: '/' }, { name: 'Contacts', path: '/contacts' }, { name: 'Loans', path: '/loans' }, { name: 'Payments', path: '/payments' }];
+  const settings = [{ name: 'Profile', path: '/profile' }, { name: 'Logout', action: logOut, path: '/' }];
+  const notLogged = [{ name: 'Home', path: '/' }, { name: 'Login', path: '/login' }, { name: 'Register', path: '/register' }];
 
   try {
     const authHeader = useAuthHeader();
@@ -87,17 +111,7 @@ const App = () => {
       EventBus.remove('logout', logOut);
     };
   }, []);
-
-  const logOut = () => {
-    signOut();
-    setCurrentUser(undefined);
-    navigate('/');
-    window.location.reload();
-  };
-
-  const pages = [{ name: 'Home', path: '/' }, { name: 'Contacts', path: '/contacts' }, { name: 'Loans', path: '/loans' }, { name: 'Payments', path: '/payments' }];
-  const settings = [{ name: 'Profile', path: '/profile' }, { name: 'Logout', action: logOut, path: '/' }];
-  const notLogged = [{ name: 'Home', path: '/' }, { name: 'Login', path: '/login' }, { name: 'Register', path: '/register' }];
+  console.log('current user', currentUser);
 
   return (
     <Box>
@@ -110,7 +124,7 @@ const App = () => {
               variant='h6'
               noWrap
               component='a'
-              href='/'
+              onClick={() => { navigate('/') }}
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
@@ -164,9 +178,8 @@ const App = () => {
               {(currentUser && pages || notLogged).map((page) => (
                 <Button
                   key={page.name}
-                  onClick={() => { handleCloseNavMenu() }}
+                  onClick={() => { handleCloseNavMenu(); navigate(page.path) }}
                   sx={{ my: 2, color: 'white', display: 'block' }}
-                  href={page.path}
                 >
                   {page.name}
                 </Button>
@@ -196,8 +209,9 @@ const App = () => {
                 onClose={() => handleCloseUserMenu()}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={typeof setting === 'string' ? setting : setting.name} href={setting.path} onClick={() => {
-                    handleCloseUserMenu(typeof setting !== 'string' ? setting.action : undefined)
+                  <MenuItem key={typeof setting === 'string' ? setting : setting.name} onClick={() => {
+                    handleCloseUserMenu(typeof setting !== 'string' ? setting.action : undefined);
+                    navigate(setting.path);
                   }}>
                     <Typography textAlign='center'>{typeof setting === 'string' ? setting : setting.name}</Typography>
                   </MenuItem>
@@ -211,8 +225,8 @@ const App = () => {
         <Toolbar />
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login callback={logIn} />} />
+          <Route path='/register' element={<Register callback={logIn} />} />
           <Route path='/profile' element={<RequireAuth loginPath='/login'><Profile /></RequireAuth>} />
           <Route path='/contacts' element={<RequireAuth loginPath='/login'><Contacts /></RequireAuth>} />
           <Route path='/loans' element={<RequireAuth loginPath='/login'><Loans /></RequireAuth>} />
