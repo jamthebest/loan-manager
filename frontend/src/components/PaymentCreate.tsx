@@ -54,6 +54,7 @@ const CreatePaymentDialog = ({ open, onClose, onCreate, loanToPay, payment }: Cr
         if (!_.isNil(onCreate) && _.isFunction(onCreate)) {
             onCreate();
         }
+        handleClose();
     };
 
     const handleClose = () => {

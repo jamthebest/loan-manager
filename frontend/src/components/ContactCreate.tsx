@@ -44,6 +44,7 @@ const CreateContactDialog = ({ open, onClose, onCreate, contact }: CreateContact
         if (!_.isNil(onCreate) && _.isFunction(onCreate)) {
             onCreate();
         }
+        handleClose();
     };
 
     const handleClose = () => {

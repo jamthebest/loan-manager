@@ -54,6 +54,7 @@ const CreateLoanDialog = ({ open, onClose, onCreate, contacts, loan }: CreateLoa
         if (!_.isNil(onCreate) && _.isFunction(onCreate)) {
             onCreate();
         }
+        handleClose();
     };
 
     const handleClose = () => {

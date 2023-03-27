@@ -6,8 +6,10 @@ COPY package.json ./
 
 RUN npm install
 
+RUN npm install nodemon --save-dev
+
 COPY ./ ./
 
-EXPOSE 5000
+EXPOSE 8080
 
-CMD ["npm", "run", "start"]
+CMD ["nodemon", "--exec", "npm", "run", "start"]

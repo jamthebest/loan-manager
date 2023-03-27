@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { RequireAuth, useSignIn, useSignOut, useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { RequireAuth, useSignIn, useSignOut, useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { AuthStateUserObject } from 'react-auth-kit/dist/types';
 import './App.css';
 
@@ -35,18 +35,20 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import axios from 'axios';
 
 const App = () => {
-  const [currentUser, setCurrentUser] = useState<AuthStateUserObject | undefined>(undefined);
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const auth = useAuthUser();
   const signIn = useSignIn();
   const signOut = useSignOut();
-  const auth = useAuthUser();
+
+  // const [currentUser, setCurrentUser] = useState<AuthStateUserObject | null>(auth());
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const isAuthenticated = useIsAuthenticated();
+
+  const currentUser = auth();
 
   const logOut = () => {
     signOut();
-    setCurrentUser(undefined);
     navigate('/');
-    window.location.reload();
   };
   const logIn = async (data: LogInProps) => {
     const authenticationRes = await signIn({
@@ -57,9 +59,9 @@ const App = () => {
     });
     console.log('authenticationRes', authenticationRes);
     navigate('/');
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 0);
   };
 
   const pages = [{ name: 'Home', path: '/' }, { name: 'Contacts', path: '/contacts' }, { name: 'Loans', path: '/loans' }, { name: 'Payments', path: '/payments' }];
@@ -97,13 +99,7 @@ const App = () => {
       action();
     }
   };
-
   useEffect(() => {
-    const user = auth();
-
-    if (user) {
-      setCurrentUser(user);
-    }
 
     EventBus.on('logout', logOut);
 
@@ -111,7 +107,7 @@ const App = () => {
       EventBus.remove('logout', logOut);
     };
   }, []);
-  console.log('current user', currentUser);
+  console.log('current user', currentUser, isAuthenticated(), auth());
 
   return (
     <Box>

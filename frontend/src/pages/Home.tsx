@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthUser } from 'react-auth-kit';
 import { AuthStateUserObject } from 'react-auth-kit/dist/types';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -12,6 +13,7 @@ import Typography from '@mui/material/Typography';
 const Home = () => {
     const [currentUser, setCurrentUser] = useState<AuthStateUserObject | undefined>(undefined);
     const auth = useAuthUser();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const user = auth();
@@ -46,10 +48,10 @@ const Home = () => {
                             Sign up today and start managing your lending activity like a pro!
                         </Typography>
                         {!currentUser && <div>
-                            <Button variant='contained' sx={{ mr: 2 }} href='/login'>
+                            <Button variant='contained' sx={{ mr: 2 }} onClick={() => { navigate('/login') }}>
                                 Sing-in
                             </Button>
-                            <Button variant='outlined' href='/register'>Sign-up</Button>
+                            <Button variant='outlined'  onClick={() => { navigate('/register') }}>Sign-up</Button>
                         </div>}
                     </Grid>
                     <Grid item xs={4}>
